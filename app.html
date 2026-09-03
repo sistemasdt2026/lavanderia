@@ -564,7 +564,7 @@ const SUPABASE_URL = 'https://rgdlwxdyptowqkgapshw.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_R9yJvdiLSlUcKfwYa53jWw_9RPicHeS';
 const WHATSAPP_NUMERO = '5491123456789';
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // ---------- helpers generales ----------
 const $ = (sel, el = document) => el.querySelector(sel);
@@ -631,11 +631,11 @@ let currentProfile = null;
 let realtimeChannel = null;
 
 async function boot() {
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { session } } = await db.auth.getSession();
   await routeSession(session);
 }
 
-supabase.auth.onAuthStateChange((_event, session) => { routeSession(session); });
+db.auth.onAuthStateChange((_event, session) => { routeSession(session); });
 
 async function routeSession(session) {
   if (!session) {
@@ -645,7 +645,7 @@ async function routeSession(session) {
     return;
   }
   currentUser = session.user;
-  const { data: profile, error } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
+  const { data: profile, error } = await db.from('profiles').select('*').eq('id', currentUser.id).single();
   if (error || !profile) {
     // Puede pasar en el instante justo posterior al registro, mientras el trigger crea el perfil.
     setTimeout(() => routeSession(session), 700);
@@ -675,8 +675,8 @@ function escapeHtml(str) {
 }
 
 $('#logoutBtn').addEventListener('click', async () => {
-  await supabase.auth.signOut();
-  if (realtimeChannel) { supabase.removeChannel(realtimeChannel); realtimeChannel = null; }
+  await db.auth.signOut();
+  if (realtimeChannel) { db.removeChannel(realtimeChannel); realtimeChannel = null; }
 });
 
 // ============================================================
@@ -698,7 +698,7 @@ $('#loginForm').addEventListener('submit', async (e) => {
   status.className = 'form-status'; status.textContent = 'Ingresando...';
   const email = $('#li-email').value.trim();
   const password = $('#li-pass').value;
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { error } = await db.auth.signInWithPassword({ email, password });
   if (error) {
     status.textContent = 'No pudimos iniciar sesión: revisá tu email y contraseña.';
     status.className = 'form-status error';
@@ -724,7 +724,7 @@ $('#registerForm').addEventListener('submit', async (e) => {
     return;
   }
   status.textContent = 'Creando cuenta...'; status.className = 'form-status';
-  const { error } = await supabase.auth.signUp({
+  const { error } = await db.auth.signUp({
     email, password,
     options: { data: { nombre, apellido, telefono, direccion: direccion || null } }
   });
@@ -742,11 +742,11 @@ $('#registerForm').addEventListener('submit', async (e) => {
 // ============================================================
 async function initClient() {
   const [{ data: orders }, { data: coupons }] = await Promise.all([
-    supabase.from('orders')
+    db.from('orders')
       .select('id, estado, fecha_ingreso, fecha_estimada_entrega, notas, order_items(id, cantidad, precio_unitario, subtotal, services(nombre, tipo_cobro))')
       .eq('profile_id', currentUser.id)
       .order('fecha_ingreso', { ascending: false }),
-    supabase.from('coupons').select('*').eq('profile_id', currentUser.id).eq('estado', 'activo')
+    db.from('coupons').select('*').eq('profile_id', currentUser.id).eq('estado', 'activo')
   ]);
 
   renderClientCoupons(coupons || []);
@@ -824,7 +824,7 @@ function initAdmin() {
 
 function subscribeRealtime() {
   if (realtimeChannel) return;
-  realtimeChannel = supabase.channel('admin-orders-realtime')
+  realtimeChannel = db.channel('admin-orders-realtime')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => { loadOrdersBoard(); })
     .on('postgres_changes', { event: '*', schema: 'public', table: 'order_items' }, () => { loadOrdersBoard(); })
     .subscribe();
@@ -856,17 +856,17 @@ function initAdminTabs() {
 
 // ---------- caches ----------
 async function loadServicesCache() {
-  const { data } = await supabase.from('services').select('*').order('nombre');
+  const { data } = await db.from('services').select('*').order('nombre');
   servicesCache = data || [];
 }
 async function loadSuppliesCache() {
-  const { data } = await supabase.from('supplies').select('*').order('nombre');
+  const { data } = await db.from('supplies').select('*').order('nombre');
   suppliesCache = data || [];
 }
 async function loadPeopleCache() {
   const [{ data: profiles }, { data: clients }] = await Promise.all([
-    supabase.from('profiles').select('id, nombre, apellido, telefono').eq('rol', 'cliente').order('nombre'),
-    supabase.from('clients').select('*').order('nombre')
+    db.from('profiles').select('id, nombre, apellido, telefono').eq('rol', 'cliente').order('nombre'),
+    db.from('clients').select('*').order('nombre')
   ]);
   profilesCache = profiles || [];
   clientsCache = clients || [];
@@ -876,7 +876,7 @@ async function loadPeopleCache() {
 // PEDIDOS — tablero
 // ============================================================
 async function loadOrdersBoard() {
-  const { data, error } = await supabase.from('orders')
+  const { data, error } = await db.from('orders')
     .select(`id, estado, fecha_ingreso, fecha_estimada_entrega, notas, profile_id, client_id,
       profiles(nombre, apellido, telefono),
       clients(nombre, apellido, telefono),
@@ -1000,7 +1000,7 @@ $('#orderNewForm').addEventListener('submit', async (e) => {
       const telefono = $('#nc-telefono').value.trim();
       const direccion = $('#nc-direccion').value.trim();
       if (!nombre || !apellido || !telefono) throw new Error('Completá nombre, apellido y teléfono del cliente nuevo.');
-      const { data: newClient, error: ncError } = await supabase.from('clients')
+      const { data: newClient, error: ncError } = await db.from('clients')
         .insert({ nombre, apellido, telefono, direccion: direccion || null }).select().single();
       if (ncError) throw new Error('No pudimos crear el cliente: ' + ncError.message);
       clientId = newClient.id;
@@ -1020,13 +1020,13 @@ $('#orderNewForm').addEventListener('submit', async (e) => {
     const fecha_estimada_entrega = $('#orderFechaEntrega').value || null;
     const notas = $('#orderNotas').value.trim() || null;
 
-    const { data: newOrder, error: orderError } = await supabase.from('orders')
+    const { data: newOrder, error: orderError } = await db.from('orders')
       .insert({ profile_id: profileId, client_id: clientId, fecha_estimada_entrega, notas, created_by: currentUser.id })
       .select().single();
     if (orderError) throw new Error('No pudimos crear el pedido: ' + orderError.message);
 
     const itemsToInsert = rows.map(r => ({ order_id: newOrder.id, service_id: r.service_id, cantidad: r.cantidad, precio_unitario: r.precio_unitario }));
-    const { error: itemsError } = await supabase.from('order_items').insert(itemsToInsert);
+    const { error: itemsError } = await db.from('order_items').insert(itemsToInsert);
     if (itemsError) throw new Error('El pedido se creó pero hubo un error cargando los servicios: ' + itemsError.message);
 
     status.textContent = '¡Pedido creado!'; status.className = 'form-status ok';
@@ -1091,7 +1091,7 @@ async function openOrderDetail(orderId) {
 
   $('#reprogramSaveBtn')?.addEventListener('click', async () => {
     const val = $('#reprogramFecha').value;
-    const { error } = await supabase.from('orders').update({ fecha_estimada_entrega: val }).eq('id', order.id);
+    const { error } = await db.from('orders').update({ fecha_estimada_entrega: val }).eq('id', order.id);
     if (error) { toast('No se pudo reprogramar.', 'error'); }
     else { toast('Fecha de entrega actualizada.'); loadOrdersBoard(); }
   });
@@ -1116,7 +1116,7 @@ async function openOrderDetail(orderId) {
 }
 
 async function changeOrderState(orderId, estado) {
-  const { error } = await supabase.from('orders').update({ estado }).eq('id', orderId);
+  const { error } = await db.from('orders').update({ estado }).eq('id', orderId);
   if (error) { toast('No pudimos actualizar el estado.', 'error'); return; }
   toast('Estado actualizado a "' + ESTADO_LABEL[estado] + '".');
   closeModal('modalOrderDetail');
@@ -1174,7 +1174,7 @@ $('#stockMoveForm').addEventListener('submit', async (e) => {
     status.className = 'form-status error';
     return;
   }
-  const { error } = await supabase.from('supply_movements').insert({
+  const { error } = await db.from('supply_movements').insert({
     supply_id, tipo: stockMoveTipo, cantidad, motivo, usuario_id: currentUser.id
   });
   if (error) {
@@ -1189,7 +1189,7 @@ $('#stockMoveForm').addEventListener('submit', async (e) => {
 
 let movementsCache = [];
 async function loadMovements() {
-  const { data } = await supabase.from('supply_movements')
+  const { data } = await db.from('supply_movements')
     .select('id, tipo, cantidad, motivo, created_at, supply_id, supplies(nombre)')
     .order('created_at', { ascending: false })
     .limit(300);
@@ -1215,7 +1215,7 @@ function renderMovementsTable() {
 
 async function loadRecipe() {
   const [{ data: recipe }] = await Promise.all([
-    supabase.from('service_supply_usage').select('id, cantidad_consumida, service_id, supply_id, services(nombre, tipo_cobro), supplies(nombre, unidad_medida)').order('id')
+    db.from('service_supply_usage').select('id, cantidad_consumida, service_id, supply_id, services(nombre, tipo_cobro), supplies(nombre, unidad_medida)').order('id')
   ]);
   $('#recipeService').innerHTML = servicesCache.map(s => `<option value="${s.id}">${escapeHtml(s.nombre)}</option>`).join('');
   $('#recipeTableBody').innerHTML = (recipe || []).map(r => `
@@ -1233,7 +1233,7 @@ async function loadRecipe() {
         message: '¿Seguro que querés quitar esta relación servicio-insumo? Los pedidos ya cargados no se ven afectados.',
         confirmText: 'Quitar',
         onConfirm: async () => {
-          const { error } = await supabase.from('service_supply_usage').delete().eq('id', btn.dataset.recipeId);
+          const { error } = await db.from('service_supply_usage').delete().eq('id', btn.dataset.recipeId);
           if (error) toast('No se pudo quitar.', 'error'); else { toast('Quitado del recetario.'); loadRecipe(); }
         }
       });
@@ -1250,7 +1250,7 @@ $('#recipeForm').addEventListener('submit', async (e) => {
   if (!service_id || !supply_id || !(cantidad_consumida >= 0)) {
     status.textContent = 'Completá todos los campos.'; status.className = 'form-status error'; return;
   }
-  const { error } = await supabase.from('service_supply_usage')
+  const { error } = await db.from('service_supply_usage')
     .upsert({ service_id, supply_id, cantidad_consumida }, { onConflict: 'service_id,supply_id' });
   if (error) {
     status.textContent = 'No se pudo guardar: ' + error.message; status.className = 'form-status error'; return;
@@ -1308,7 +1308,7 @@ $('#serviceForm').addEventListener('submit', async (e) => {
   if (!payload.nombre || !(payload.precio >= 0)) {
     status.textContent = 'Completá nombre y precio válidos.'; status.className = 'form-status error'; return;
   }
-  const query = id ? supabase.from('services').update(payload).eq('id', id) : supabase.from('services').insert(payload);
+  const query = id ? db.from('services').update(payload).eq('id', id) : db.from('services').insert(payload);
   const { error } = await query;
   if (error) { status.textContent = 'No se pudo guardar: ' + error.message; status.className = 'form-status error'; return; }
   toast('Servicio guardado.');
@@ -1333,13 +1333,13 @@ async function loadStats() {
   const hasta = $('#statsHasta').value;
   const hastaFull = hasta + 'T23:59:59';
 
-  const { data: orders } = await supabase.from('orders')
+  const { data: orders } = await db.from('orders')
     .select('id, fecha_ingreso, order_items(cantidad, subtotal, services(nombre, tipo_cobro))')
     .eq('estado', 'entregado')
     .gte('fecha_ingreso', desde)
     .lte('fecha_ingreso', hastaFull);
 
-  const { data: movements } = await supabase.from('supply_movements')
+  const { data: movements } = await db.from('supply_movements')
     .select('cantidad, supplies(nombre, unidad_medida)')
     .eq('tipo', 'consumo_automatico')
     .gte('created_at', desde)
@@ -1393,7 +1393,7 @@ function drawBarChart(canvasId, labels, data, color) {
 }
 
 async function renderRanking() {
-  const { data: orders } = await supabase.from('orders')
+  const { data: orders } = await db.from('orders')
     .select('profile_id, client_id, profiles(nombre, apellido), clients(nombre, apellido)')
     .eq('estado', 'entregado');
   const counts = {};
@@ -1411,7 +1411,7 @@ async function renderRanking() {
 }
 
 async function renderCoupons() {
-  const { data: coupons } = await supabase.from('coupons')
+  const { data: coupons } = await db.from('coupons')
     .select('*, profiles(nombre, apellido), clients(nombre, apellido)')
     .order('created_at', { ascending: false });
   $('#couponsTableBody').innerHTML = (coupons || []).map(c => {
@@ -1432,7 +1432,7 @@ async function renderCoupons() {
         message: '¿Confirmás que este cupón ya fue utilizado por el cliente?',
         confirmText: 'Marcar usado',
         onConfirm: async () => {
-          const { error } = await supabase.from('coupons').update({ estado: 'usado' }).eq('id', btn.dataset.useCoupon);
+          const { error } = await db.from('coupons').update({ estado: 'usado' }).eq('id', btn.dataset.useCoupon);
           if (error) toast('No se pudo actualizar.', 'error'); else { toast('Cupón marcado como usado.'); renderCoupons(); }
         }
       });
