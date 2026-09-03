@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi cuenta — Pulcro Lavandería</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0E7C7B">
+<link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  /* Mismo sistema visual que index.html — ver comentarios allá. */
+  :root{
+    --color-primary:#0E7C7B; --color-primary-dark:#0A5C5B; --color-primary-light:#E3F4F3;
+    --color-accent:#FF8A5B; --color-accent-dark:#E86F3E; --color-bubble:#BFEAE8;
+    --color-bg:#FAFBF8; --color-surface:#FFFFFF; --color-ink:#152727; --color-ink-soft:#4A5D5D;
+    --color-border:#E1EDEC; --color-danger:#B4402C; --color-danger-bg:#FBE7E3;
+    --color-ok:#1E8E5A; --color-ok-bg:#E4F6EC; --color-warn:#B87A0A; --color-warn-bg:#FBF0DC;
+    --radius-lg:24px; --radius-md:14px; --radius-sm:10px;
+    --shadow-soft:0 10px 30px -12px rgba(14,124,123,0.25);
+    --font-display:'Fraunces', Georgia, serif; --font-body:'Plus Jakarta Sans', system-ui, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  @media (prefers-reduced-motion: reduce){ *{animation-duration:.001ms !important;transition-duration:.001ms !important;} }
+  body{margin:0;font-family:var(--font-body);color:var(--color-ink);background:var(--color-bg);line-height:1.55;}
+  h1,h2,h3,h4{font-family:var(--font-display);color:var(--color-primary-dark);margin:0 0 .4em;font-weight:600;}
+  p{margin:0 0 .8em;}
+  a{color:var(--color-primary-dark);}
+  button{font-family:var(--font-body);}
+  .container{max-width:1220px;margin:0 auto;padding:0 20px;}
+  [hidden]{display:none !important;}
+
+  .skip-link{position:absolute;left:-999px;top:auto;background:var(--color-primary-dark);color:#fff;padding:12px 20px;border-radius:0 0 10px 0;z-index:300;font-weight:600;text-decoration:none;}
+  .skip-link:focus{left:0;top:0;}
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible{outline:3px solid var(--color-accent);outline-offset:2px;}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:999px;font-weight:700;font-size:.92rem;text-decoration:none;border:2px solid transparent;cursor:pointer;transition:transform .12s ease;}
+  .btn:hover{transform:translateY(-1px);}
+  .btn-primary{background:var(--color-primary-dark);color:#fff;}
+  .btn-primary:hover{background:var(--color-primary);}
+  .btn-outline{background:transparent;border-color:var(--color-primary-dark);color:var(--color-primary-dark);}
+  .btn-accent{background:var(--color-accent);color:#20140d;}
+  .btn-accent:hover{background:var(--color-accent-dark);color:#fff;}
+  .btn-danger{background:var(--color-danger-bg);color:var(--color-danger);border-color:var(--color-danger-bg);}
+  .btn-danger:hover{background:var(--color-danger);color:#fff;}
+  .btn-sm{padding:7px 14px;font-size:.82rem;}
+  .btn-block{width:100%;}
+  .btn[disabled]{opacity:.55;cursor:not-allowed;transform:none;}
+
+  .badge{display:inline-flex;align-items:center;padding:4px 12px;border-radius:999px;font-size:.78rem;font-weight:700;}
+  .badge-recibido{background:#E9EEF7;color:#33507A;}
+  .badge-en_proceso{background:var(--color-warn-bg);color:var(--color-warn);}
+  .badge-listo{background:var(--color-primary-light);color:var(--color-primary-dark);}
+  .badge-entregado{background:var(--color-ok-bg);color:var(--color-ok);}
+  .badge-cancelado{background:var(--color-danger-bg);color:var(--color-danger);}
+  .badge-ok{background:var(--color-ok-bg);color:var(--color-ok);}
+  .badge-bajo{background:var(--color-danger-bg);color:var(--color-danger);}
+  .badge-activo{background:var(--color-ok-bg);color:var(--color-ok);}
+  .badge-usado{background:#EDEDED;color:#666;}
+  .badge-vencido{background:var(--color-danger-bg);color:var(--color-danger);}
+
+  /* ---------- header ---------- */
+  .app-header{position:sticky;top:0;z-index:80;background:rgba(250,251,248,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--color-border);}
+  .app-header .bar{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;max-width:1220px;margin:0 auto;gap:14px;flex-wrap:wrap;}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--color-primary-dark);}
+  .brand-mark{width:36px;height:36px;border-radius:50%;background:radial-gradient(circle at 30% 30%, var(--color-bubble), var(--color-primary));box-shadow:var(--shadow-soft);}
+  .brand-name{font-family:var(--font-display);font-weight:700;font-size:1.15rem;}
+  .who{font-size:.85rem;color:var(--color-ink-soft);}
+  .who strong{color:var(--color-ink);}
+
+  /* ---------- auth ---------- */
+  .auth-wrap{min-height:calc(100vh - 0px);display:flex;align-items:center;justify-content:center;padding:40px 20px;}
+  .auth-card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);box-shadow:var(--shadow-soft);width:100%;max-width:440px;padding:34px 30px;}
+  .auth-tabs{display:flex;gap:8px;background:var(--color-primary-light);padding:5px;border-radius:999px;margin-bottom:24px;}
+  .auth-tab{flex:1;border:0;background:transparent;padding:10px;border-radius:999px;font-weight:700;color:var(--color-primary-dark);cursor:pointer;}
+  .auth-tab[aria-selected="true"]{background:var(--color-primary-dark);color:#fff;}
+  .field{margin-bottom:16px;}
+  .field label{display:block;font-weight:700;font-size:.86rem;margin-bottom:5px;}
+  .field .hint{font-weight:400;color:var(--color-ink-soft);font-size:.78rem;}
+  .field input, .field select, .field textarea{width:100%;padding:11px 13px;border-radius:var(--radius-sm);border:1px solid var(--color-border);font-family:var(--font-body);font-size:.95rem;background:#fff;color:var(--color-ink);}
+  .field textarea{min-height:80px;resize:vertical;}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .form-status{min-height:1.4em;font-weight:600;font-size:.88rem;margin:6px 0 10px;}
+  .form-status.ok{color:var(--color-ok);}
+  .form-status.error{color:var(--color-danger);}
+
+  /* ---------- generic layout ---------- */
+  main{padding:28px 0 60px;}
+  .page-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px;}
+  .note-box{background:var(--color-primary-light);border:1px solid var(--color-bubble);border-radius:var(--radius-md);padding:16px 18px;color:var(--color-primary-dark);font-weight:600;font-size:.9rem;margin-bottom:22px;}
+  .card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:20px;box-shadow:var(--shadow-soft);}
+  .empty{color:var(--color-ink-soft);font-style:italic;padding:18px 0;}
+
+  /* ---------- cliente: pedidos ---------- */
+  .orders-list{display:grid;gap:16px;}
+  .order-card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:18px 20px;box-shadow:var(--shadow-soft);}
+  .order-card .top-row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;}
+  .order-card .meta{font-size:.85rem;color:var(--color-ink-soft);}
+  .order-items-mini{list-style:none;margin:10px 0 0;padding:0;font-size:.9rem;}
+  .order-items-mini li{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px dashed var(--color-border);}
+  .order-total{text-align:right;font-weight:800;margin-top:10px;font-family:var(--font-display);color:var(--color-accent-dark);}
+  .coupon-row{display:flex;gap:12px;flex-wrap:wrap;}
+  .coupon-chip{background:var(--color-accent);color:#20140d;border-radius:var(--radius-sm);padding:12px 16px;font-weight:800;box-shadow:var(--shadow-soft);}
+
+  /* ---------- tabs admin ---------- */
+  .tabs-nav{display:flex;gap:8px;border-bottom:2px solid var(--color-border);margin-bottom:24px;flex-wrap:wrap;}
+  .tab-btn{background:transparent;border:0;padding:12px 18px;font-weight:700;color:var(--color-ink-soft);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;}
+  .tab-btn[aria-selected="true"]{color:var(--color-primary-dark);border-color:var(--color-accent);}
+
+  /* ---------- kanban ---------- */
+  .board{display:grid;grid-template-columns:repeat(5,minmax(230px,1fr));gap:16px;overflow-x:auto;}
+  .board-col{background:#F1F6F5;border-radius:var(--radius-md);padding:14px;min-height:120px;}
+  .board-col h3{font-size:.95rem;display:flex;justify-content:space-between;align-items:center;}
+  .board-col h3 .count{background:#fff;border-radius:999px;padding:2px 9px;font-size:.78rem;color:var(--color-ink-soft);}
+  .pedido-card{background:#fff;border-radius:var(--radius-sm);padding:12px 14px;margin-top:10px;box-shadow:0 4px 14px -8px rgba(0,0,0,.2);cursor:pointer;border:1px solid var(--color-border);text-align:left;width:100%;font-family:var(--font-body);}
+  .pedido-card:hover{border-color:var(--color-primary);}
+  .pedido-card .pc-name{font-weight:800;font-size:.92rem;}
+  .pedido-card .pc-meta{font-size:.78rem;color:var(--color-ink-soft);margin-top:4px;}
+  .pedido-card .pc-total{font-weight:800;color:var(--color-accent-dark);margin-top:6px;font-family:var(--font-display);}
+
+  /* ---------- tables ---------- */
+  table{width:100%;border-collapse:collapse;font-size:.9rem;}
+  thead th{text-align:left;font-size:.76rem;text-transform:uppercase;letter-spacing:.03em;color:var(--color-ink-soft);padding:8px 10px;border-bottom:2px solid var(--color-border);}
+  tbody td{padding:10px 10px;border-bottom:1px solid var(--color-border);vertical-align:middle;}
+  tbody tr:hover{background:var(--color-primary-light);}
+  .table-wrap{overflow-x:auto;}
+
+  /* ---------- modales ---------- */
+  .modal-backdrop{position:fixed;inset:0;background:rgba(10,30,29,.5);display:flex;align-items:center;justify-content:center;padding:20px;z-index:250;}
+  .modal{background:#fff;border-radius:var(--radius-lg);max-width:560px;width:100%;max-height:88vh;overflow-y:auto;padding:28px;box-shadow:0 30px 60px -20px rgba(0,0,0,.4);}
+  .modal.modal-wide{max-width:760px;}
+  .modal-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:16px;}
+  .modal-close{background:var(--color-primary-light);border:0;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:1.1rem;color:var(--color-primary-dark);flex:none;}
+  .row-service{display:grid;grid-template-columns:2fr 1fr auto;gap:10px;align-items:end;margin-bottom:10px;}
+  .radio-group{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:14px;}
+  .radio-group label{display:flex;align-items:center;gap:6px;font-weight:600;font-size:.9rem;}
+
+  /* ---------- estadísticas ---------- */
+  .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin:20px 0;}
+  .stat-tile{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:18px;text-align:center;}
+  .stat-tile .num{font-family:var(--font-display);font-size:1.7rem;color:var(--color-primary-dark);font-weight:700;}
+  .stat-tile .lbl{font-size:.8rem;color:var(--color-ink-soft);font-weight:600;}
+  .chart-wrap{background:#fff;border:1px solid var(--color-border);border-radius:var(--radius-md);padding:18px;margin-bottom:24px;}
+  .filters-row{display:flex;gap:14px;flex-wrap:wrap;align-items:end;margin-bottom:20px;}
+
+  /* ---------- toast ---------- */
+  #toastRegion{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:400;display:flex;flex-direction:column;gap:8px;align-items:center;}
+  .toast{background:var(--color-primary-dark);color:#fff;padding:12px 20px;border-radius:999px;font-weight:600;font-size:.9rem;box-shadow:var(--shadow-soft);}
+  .toast.error{background:var(--color-danger);}
+
+  @media (max-width:760px){
+    .two-col{grid-template-columns:1fr;}
+    .board{grid-template-columns:1fr;}
+    .row-service{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Saltar al contenido principal</a>
+<div id="toastRegion" aria-live="polite" aria-atomic="true"></div>
+
+<header class="app-header" id="appHeader" hidden>
+  <div class="bar">
+    <a class="brand" href="app.html">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-name">Pulcro</span>
+    </a>
+    <div style="display:flex;align-items:center;gap:16px;">
+      <span class="who" id="whoAmI"></span>
+      <button class="btn btn-outline btn-sm" id="logoutBtn">Cerrar sesión</button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ============ AUTH ============ -->
+  <section id="authSection" class="auth-wrap">
+    <div class="auth-card">
+      <div style="text-align:center;margin-bottom:18px;">
+        <span class="brand-mark" aria-hidden="true" style="display:inline-block;width:44px;height:44px;"></span>
+        <h1 style="font-size:1.4rem;margin-top:10px;">Pulcro Lavandería</h1>
+        <p style="color:var(--color-ink-soft);font-size:.88rem;">Seguimiento de pedidos y panel de administración</p>
+      </div>
+      <div class="auth-tabs" role="tablist" aria-label="Acceso">
+        <button class="auth-tab" id="tabLoginBtn" role="tab" aria-selected="true" aria-controls="loginForm">Ingresar</button>
+        <button class="auth-tab" id="tabRegisterBtn" role="tab" aria-selected="false" aria-controls="registerForm">Crear cuenta</button>
+      </div>
+
+      <form id="loginForm" novalidate>
+        <div class="field">
+          <label for="li-email">Email</label>
+          <input type="email" id="li-email" name="email" required autocomplete="email">
+        </div>
+        <div class="field">
+          <label for="li-pass">Contraseña</label>
+          <input type="password" id="li-pass" name="password" required autocomplete="current-password">
+        </div>
+        <p class="form-status" id="loginStatus" role="alert"></p>
+        <button class="btn btn-primary btn-block" type="submit">Ingresar</button>
+      </form>
+
+      <form id="registerForm" novalidate hidden>
+        <div class="two-col">
+          <div class="field">
+            <label for="re-nombre">Nombre</label>
+            <input type="text" id="re-nombre" name="nombre" required autocomplete="given-name">
+          </div>
+          <div class="field">
+            <label for="re-apellido">Apellido</label>
+            <input type="text" id="re-apellido" name="apellido" required autocomplete="family-name">
+          </div>
+        </div>
+        <div class="field">
+          <label for="re-telefono">Teléfono</label>
+          <input type="tel" id="re-telefono" name="telefono" required autocomplete="tel">
+        </div>
+        <div class="field">
+          <label for="re-direccion">Dirección <span class="hint">(opcional)</span></label>
+          <input type="text" id="re-direccion" name="direccion" autocomplete="street-address">
+        </div>
+        <div class="field">
+          <label for="re-email">Email</label>
+          <input type="email" id="re-email" name="email" required autocomplete="email">
+        </div>
+        <div class="two-col">
+          <div class="field">
+            <label for="re-pass">Contraseña</label>
+            <input type="password" id="re-pass" name="password" required minlength="6" autocomplete="new-password">
+          </div>
+          <div class="field">
+            <label for="re-pass2">Repetir contraseña</label>
+            <input type="password" id="re-pass2" name="password2" required minlength="6" autocomplete="new-password">
+          </div>
+        </div>
+        <p class="form-status" id="registerStatus" role="alert"></p>
+        <button class="btn btn-primary btn-block" type="submit">Crear cuenta</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ============ VISTA CLIENTE ============ -->
+  <section id="clientSection" class="container" hidden>
+    <div class="page-head">
+      <h1 style="font-size:1.6rem;">Mis pedidos</h1>
+    </div>
+    <div class="note-box">Los pedidos nuevos los carga el mostrador cuando recibimos tu ropa — desde acá podés ver el estado y el historial, no podés cargar un pedido vos mismo/a.</div>
+
+    <div id="clientCoupons" class="coupon-row" style="margin-bottom:26px;"></div>
+
+    <h2 style="font-size:1.15rem;">Pedidos activos</h2>
+    <div id="clientActiveOrders" class="orders-list" aria-live="polite"></div>
+
+    <h2 style="font-size:1.15rem;margin-top:34px;">Historial</h2>
+    <div id="clientHistoryOrders" class="orders-list" aria-live="polite"></div>
+  </section>
+
+  <!-- ============ PANEL ADMIN ============ -->
+  <section id="adminSection" class="container" hidden>
+    <div class="page-head">
+      <h1 style="font-size:1.6rem;">Panel de administración</h1>
+    </div>
+
+    <div class="tabs-nav" role="tablist" aria-label="Secciones del panel">
+      <button class="tab-btn" role="tab" aria-selected="true" aria-controls="panelPedidos" id="tabPedidosBtn">Pedidos</button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panelStock" id="tabStockBtn">Stock</button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panelServicios" id="tabServiciosBtn">Servicios</button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panelEstadisticas" id="tabEstadisticasBtn">Estadísticas</button>
+    </div>
+
+    <!-- ---- PEDIDOS ---- -->
+    <div id="panelPedidos" role="tabpanel" aria-labelledby="tabPedidosBtn">
+      <div class="page-head">
+        <p style="margin:0;color:var(--color-ink-soft);">Tablero en vivo — se actualiza solo cuando entra un pedido o cambia de estado.</p>
+        <button class="btn btn-accent" id="newOrderBtn">+ Nuevo pedido</button>
+      </div>
+      <div class="board" id="ordersBoard" aria-live="polite"></div>
+    </div>
+
+    <!-- ---- STOCK ---- -->
+    <div id="panelStock" role="tabpanel" aria-labelledby="tabStockBtn" hidden>
+      <div class="page-head">
+        <h2 style="font-size:1.2rem;">Insumos</h2>
+        <div style="display:flex;gap:10px;">
+          <button class="btn btn-outline btn-sm" id="btnEntradaStock">+ Entrada</button>
+          <button class="btn btn-outline btn-sm" id="btnSalidaStock">+ Salida</button>
+        </div>
+      </div>
+      <div class="table-wrap card" style="margin-bottom:28px;">
+        <table>
+          <thead><tr><th>Insumo</th><th>Unidad</th><th>Stock actual</th><th>Mínimo</th><th>Costo unit.</th><th>Estado</th></tr></thead>
+          <tbody id="suppliesTableBody"></tbody>
+        </table>
+      </div>
+
+      <h2 style="font-size:1.2rem;">Historial de movimientos</h2>
+      <div class="filters-row">
+        <div class="field" style="min-width:200px;">
+          <label for="filterMoveSupply">Insumo</label>
+          <select id="filterMoveSupply"><option value="">Todos</option></select>
+        </div>
+        <div class="field" style="min-width:200px;">
+          <label for="filterMoveType">Tipo</label>
+          <select id="filterMoveType">
+            <option value="">Todos</option>
+            <option value="entrada_manual">Entrada manual</option>
+            <option value="salida_manual">Salida manual</option>
+            <option value="consumo_automatico">Consumo automático</option>
+          </select>
+        </div>
+      </div>
+      <div class="table-wrap card" style="margin-bottom:28px;">
+        <table>
+          <thead><tr><th>Fecha</th><th>Insumo</th><th>Tipo</th><th>Cantidad</th><th>Motivo</th></tr></thead>
+          <tbody id="movementsTableBody"></tbody>
+        </table>
+      </div>
+
+      <h2 style="font-size:1.2rem;">Recetario (consumo de insumos por servicio)</h2>
+      <p style="color:var(--color-ink-soft);">Define cuánto insumo se descuenta automáticamente por cada kg o prenda vendida de un servicio.</p>
+      <div class="card" style="margin-bottom:16px;">
+        <form id="recipeForm" class="two-col" style="align-items:end;grid-template-columns:1fr 1fr 1fr auto;">
+          <div class="field" style="margin-bottom:0;">
+            <label for="recipeService">Servicio</label>
+            <select id="recipeService" required></select>
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label for="recipeSupply">Insumo</label>
+            <select id="recipeSupply" required></select>
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label for="recipeQty">Cantidad por unidad</label>
+            <input type="number" id="recipeQty" step="0.0001" min="0" required>
+          </div>
+          <button class="btn btn-primary" type="submit">Guardar</button>
+        </form>
+        <p class="form-status" id="recipeStatus" role="alert"></p>
+      </div>
+      <div class="table-wrap card">
+        <table>
+          <thead><tr><th>Servicio</th><th>Insumo</th><th>Cantidad por unidad</th><th></th></tr></thead>
+          <tbody id="recipeTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ---- SERVICIOS ---- -->
+    <div id="panelServicios" role="tabpanel" aria-labelledby="tabServiciosBtn" hidden>
+      <div class="page-head">
+        <h2 style="font-size:1.2rem;">Servicios</h2>
+        <button class="btn btn-accent" id="newServiceBtn">+ Nuevo servicio</button>
+      </div>
+      <div class="table-wrap card">
+        <table>
+          <thead><tr><th>Nombre</th><th>Tipo de cobro</th><th>Precio</th><th>Estado</th><th></th></tr></thead>
+          <tbody id="servicesTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ---- ESTADÍSTICAS ---- -->
+    <div id="panelEstadisticas" role="tabpanel" aria-labelledby="tabEstadisticasBtn" hidden>
+      <div class="filters-row">
+        <div class="field" style="margin-bottom:0;">
+          <label for="statsDesde">Desde</label>
+          <input type="date" id="statsDesde">
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label for="statsHasta">Hasta</label>
+          <input type="date" id="statsHasta">
+        </div>
+        <button class="btn btn-primary" id="statsApplyBtn">Aplicar</button>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-tile"><div class="num" id="statTotalFacturado">$0</div><div class="lbl">Total facturado (entregados)</div></div>
+        <div class="stat-tile"><div class="num" id="statKilos">0</div><div class="lbl">Kg procesados</div></div>
+        <div class="stat-tile"><div class="num" id="statPrendas">0</div><div class="lbl">Prendas procesadas</div></div>
+        <div class="stat-tile"><div class="num" id="statPedidos">0</div><div class="lbl">Pedidos entregados</div></div>
+      </div>
+
+      <div class="chart-wrap">
+        <h3 style="font-size:1rem;">Facturación por servicio</h3>
+        <canvas id="chartFacturacion" height="110" role="img" aria-label="Gráfico de barras de facturación por servicio en el período seleccionado"></canvas>
+      </div>
+      <div class="chart-wrap">
+        <h3 style="font-size:1rem;">Consumo de insumos en el período</h3>
+        <canvas id="chartInsumos" height="110" role="img" aria-label="Gráfico de barras de consumo de insumos en el período seleccionado"></canvas>
+      </div>
+
+      <h2 style="font-size:1.2rem;">Clientes frecuentes</h2>
+      <div class="table-wrap card" style="margin-bottom:28px;">
+        <table>
+          <thead><tr><th>Cliente</th><th>Pedidos entregados</th><th>Para el próximo cupón</th></tr></thead>
+          <tbody id="rankingTableBody"></tbody>
+        </table>
+      </div>
+
+      <h2 style="font-size:1.2rem;">Cupones generados</h2>
+      <div class="table-wrap card">
+        <table>
+          <thead><tr><th>Código</th><th>Cliente</th><th>% Descuento</th><th>Estado</th><th></th></tr></thead>
+          <tbody id="couponsTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ MODAL: confirmación genérica ============ -->
+<div class="modal-backdrop" id="modalConfirm" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <div class="modal-head">
+      <h2 id="confirmTitle" style="font-size:1.2rem;">Confirmar</h2>
+      <button class="modal-close" data-close="modalConfirm" aria-label="Cerrar">✕</button>
+    </div>
+    <p id="confirmMessage"></p>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:18px;">
+      <button class="btn btn-outline" data-close="modalConfirm">Cancelar</button>
+      <button class="btn btn-danger" id="confirmActionBtn">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: nuevo pedido ============ -->
+<div class="modal-backdrop" id="modalOrderNew" hidden>
+  <div class="modal modal-wide" role="dialog" aria-modal="true" aria-labelledby="orderNewTitle">
+    <div class="modal-head">
+      <h2 id="orderNewTitle" style="font-size:1.2rem;">Nuevo pedido</h2>
+      <button class="modal-close" data-close="modalOrderNew" aria-label="Cerrar">✕</button>
+    </div>
+    <form id="orderNewForm" novalidate>
+      <div class="radio-group" role="radiogroup" aria-label="Tipo de cliente">
+        <label><input type="radio" name="clientMode" value="profile" checked> Cliente con cuenta</label>
+        <label><input type="radio" name="clientMode" value="existing_client"> Cliente de mostrador existente</label>
+        <label><input type="radio" name="clientMode" value="new_client"> Cliente de mostrador nuevo</label>
+      </div>
+
+      <div class="field" id="pickProfileWrap">
+        <label for="pickProfile">Elegir cliente registrado</label>
+        <select id="pickProfile"></select>
+      </div>
+      <div class="field" id="pickClientWrap" hidden>
+        <label for="pickClient">Elegir cliente de mostrador</label>
+        <select id="pickClient"></select>
+      </div>
+      <div id="newClientWrap" hidden>
+        <div class="two-col">
+          <div class="field"><label for="nc-nombre">Nombre</label><input type="text" id="nc-nombre"></div>
+          <div class="field"><label for="nc-apellido">Apellido</label><input type="text" id="nc-apellido"></div>
+        </div>
+        <div class="two-col">
+          <div class="field"><label for="nc-telefono">Teléfono</label><input type="tel" id="nc-telefono"></div>
+          <div class="field"><label for="nc-direccion">Dirección <span class="hint">(opcional)</span></label><input type="text" id="nc-direccion"></div>
+        </div>
+      </div>
+
+      <h3 style="font-size:1rem;margin-top:16px;">Servicios</h3>
+      <div id="orderServiceRows"></div>
+      <button type="button" class="btn btn-outline btn-sm" id="addServiceRowBtn">+ Agregar servicio</button>
+
+      <div class="two-col" style="margin-top:18px;">
+        <div class="field">
+          <label for="orderFechaEntrega">Fecha estimada de entrega</label>
+          <input type="date" id="orderFechaEntrega" required>
+        </div>
+        <div class="field">
+          <label for="orderNotas">Notas <span class="hint">(opcional)</span></label>
+          <input type="text" id="orderNotas">
+        </div>
+      </div>
+
+      <p style="text-align:right;font-weight:800;" id="orderNewTotalPreview">Total estimado: $0</p>
+      <p class="form-status" id="orderNewStatus" role="alert"></p>
+      <button class="btn btn-primary btn-block" type="submit">Crear pedido</button>
+    </form>
+  </div>
+</div>
+
+<!-- ============ MODAL: detalle de pedido ============ -->
+<div class="modal-backdrop" id="modalOrderDetail" hidden>
+  <div class="modal modal-wide" role="dialog" aria-modal="true" aria-labelledby="orderDetailTitle">
+    <div class="modal-head">
+      <h2 id="orderDetailTitle" style="font-size:1.2rem;">Pedido</h2>
+      <button class="modal-close" data-close="modalOrderDetail" aria-label="Cerrar">✕</button>
+    </div>
+    <div id="orderDetailContent"></div>
+  </div>
+</div>
+
+<!-- ============ MODAL: movimiento de stock ============ -->
+<div class="modal-backdrop" id="modalStockMove" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="stockMoveTitle">
+    <div class="modal-head">
+      <h2 id="stockMoveTitle" style="font-size:1.2rem;">Movimiento de stock</h2>
+      <button class="modal-close" data-close="modalStockMove" aria-label="Cerrar">✕</button>
+    </div>
+    <form id="stockMoveForm" novalidate>
+      <div class="field">
+        <label for="sm-supply">Insumo</label>
+        <select id="sm-supply" required></select>
+      </div>
+      <div class="field">
+        <label for="sm-qty">Cantidad</label>
+        <input type="number" id="sm-qty" step="0.001" min="0.001" required>
+      </div>
+      <div class="field">
+        <label for="sm-motivo">Motivo</label>
+        <input type="text" id="sm-motivo" required placeholder="Ej: compra, rotura, vencimiento, uso interno">
+      </div>
+      <p class="form-status" id="stockMoveStatus" role="alert"></p>
+      <button class="btn btn-primary btn-block" type="submit" id="stockMoveSubmitBtn">Guardar</button>
+    </form>
+  </div>
+</div>
+
+<!-- ============ MODAL: alta/edición de servicio ============ -->
+<div class="modal-backdrop" id="modalService" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="serviceModalTitle">
+    <div class="modal-head">
+      <h2 id="serviceModalTitle" style="font-size:1.2rem;">Servicio</h2>
+      <button class="modal-close" data-close="modalService" aria-label="Cerrar">✕</button>
+    </div>
+    <form id="serviceForm" novalidate>
+      <input type="hidden" id="sv-id">
+      <div class="field">
+        <label for="sv-nombre">Nombre</label>
+        <input type="text" id="sv-nombre" required>
+      </div>
+      <div class="field">
+        <label for="sv-tipo">Tipo de cobro</label>
+        <select id="sv-tipo" required>
+          <option value="por_kg">Por kg</option>
+          <option value="por_prenda">Por prenda</option>
+          <option value="fijo">Fijo</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="sv-precio">Precio</label>
+        <input type="number" id="sv-precio" step="0.01" min="0" required>
+      </div>
+      <div class="field">
+        <label><input type="checkbox" id="sv-activo" checked> Activo (visible en la web y disponible para nuevos pedidos)</label>
+      </div>
+      <p class="form-status" id="serviceStatus" role="alert"></p>
+      <button class="btn btn-primary btn-block" type="submit">Guardar</button>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<script>
+// ============================================================
+// CONFIGURACIÓN SUPABASE — reemplazar por las credenciales reales.
+// Tiene que ser EXACTAMENTE la misma URL/clave que pusiste en index.html.
+// ============================================================
+const SUPABASE_URL = 'https://rgdlwxdyptowqkgapshw.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_R9yJvdiLSlUcKfwYa53jWw_9RPicHeS';
+const WHATSAPP_NUMERO = '5491123456789';
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ---------- helpers generales ----------
+const $ = (sel, el = document) => el.querySelector(sel);
+const $$ = (sel, el = document) => [...el.querySelectorAll(sel)];
+const fmtMoney = n => '$' + Number(n || 0).toLocaleString('es-AR', { maximumFractionDigits: 0 });
+const fmtDate = d => d ? new Date(d).toLocaleDateString('es-AR') : '—';
+const fmtDateTime = d => d ? new Date(d).toLocaleString('es-AR') : '—';
+const ESTADOS = ['recibido', 'en_proceso', 'listo', 'entregado', 'cancelado'];
+const ESTADO_LABEL = { recibido: 'Recibido', en_proceso: 'En proceso', listo: 'Listo', entregado: 'Entregado', cancelado: 'Cancelado' };
+
+function toast(msg, type = 'ok') {
+  const region = $('#toastRegion');
+  const el = document.createElement('div');
+  el.className = 'toast' + (type === 'error' ? ' error' : '');
+  el.textContent = msg;
+  region.appendChild(el);
+  setTimeout(() => el.remove(), 4000);
+}
+
+let lastFocusedEl = null;
+function openModal(id) {
+  lastFocusedEl = document.activeElement;
+  const modal = document.getElementById(id);
+  modal.hidden = false;
+  const focusable = modal.querySelector('input, select, textarea, button');
+  if (focusable) focusable.focus();
+  document.addEventListener('keydown', escCloseHandler);
+}
+function closeModal(id) {
+  const modal = document.getElementById(id);
+  modal.hidden = true;
+  document.removeEventListener('keydown', escCloseHandler);
+  if (lastFocusedEl) lastFocusedEl.focus();
+}
+function escCloseHandler(e) {
+  if (e.key === 'Escape') {
+    $$('.modal-backdrop').forEach(m => { if (!m.hidden) closeModal(m.id); });
+  }
+}
+$$('[data-close]').forEach(btn => btn.addEventListener('click', () => closeModal(btn.dataset.close)));
+$$('.modal-backdrop').forEach(backdrop => {
+  backdrop.addEventListener('click', (e) => { if (e.target === backdrop) closeModal(backdrop.id); });
+});
+
+function askConfirm({ title, message, confirmText = 'Confirmar', onConfirm }) {
+  $('#confirmTitle').textContent = title;
+  $('#confirmMessage').textContent = message;
+  const btn = $('#confirmActionBtn');
+  btn.textContent = confirmText;
+  const clone = btn.cloneNode(true);
+  btn.parentNode.replaceChild(clone, btn);
+  clone.addEventListener('click', async () => {
+    closeModal('modalConfirm');
+    await onConfirm();
+  });
+  openModal('modalConfirm');
+}
+
+// ============================================================
+// SESIÓN / RUTEO
+// ============================================================
+let currentUser = null;
+let currentProfile = null;
+let realtimeChannel = null;
+
+async function boot() {
+  const { data: { session } } = await supabase.auth.getSession();
+  await routeSession(session);
+}
+
+supabase.auth.onAuthStateChange((_event, session) => { routeSession(session); });
+
+async function routeSession(session) {
+  if (!session) {
+    currentUser = null; currentProfile = null;
+    $('#appHeader').hidden = true;
+    show('authSection');
+    return;
+  }
+  currentUser = session.user;
+  const { data: profile, error } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
+  if (error || !profile) {
+    // Puede pasar en el instante justo posterior al registro, mientras el trigger crea el perfil.
+    setTimeout(() => routeSession(session), 700);
+    return;
+  }
+  currentProfile = profile;
+  $('#appHeader').hidden = false;
+  $('#whoAmI').innerHTML = `Hola, <strong>${escapeHtml(profile.nombre)}</strong> · ${profile.rol === 'admin' ? 'Administrador/a' : 'Cliente'}`;
+
+  if (profile.rol === 'admin') {
+    show('adminSection');
+    initAdmin();
+  } else {
+    show('clientSection');
+    initClient();
+  }
+}
+
+function show(sectionId) {
+  ['authSection', 'clientSection', 'adminSection'].forEach(id => {
+    $('#' + id).hidden = (id !== sectionId);
+  });
+}
+
+function escapeHtml(str) {
+  return String(str ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+$('#logoutBtn').addEventListener('click', async () => {
+  await supabase.auth.signOut();
+  if (realtimeChannel) { supabase.removeChannel(realtimeChannel); realtimeChannel = null; }
+});
+
+// ============================================================
+// AUTH — tabs, login, registro
+// ============================================================
+$('#tabLoginBtn').addEventListener('click', () => switchAuthTab('login'));
+$('#tabRegisterBtn').addEventListener('click', () => switchAuthTab('register'));
+function switchAuthTab(which) {
+  const isLogin = which === 'login';
+  $('#tabLoginBtn').setAttribute('aria-selected', String(isLogin));
+  $('#tabRegisterBtn').setAttribute('aria-selected', String(!isLogin));
+  $('#loginForm').hidden = !isLogin;
+  $('#registerForm').hidden = isLogin;
+}
+
+$('#loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const status = $('#loginStatus');
+  status.className = 'form-status'; status.textContent = 'Ingresando...';
+  const email = $('#li-email').value.trim();
+  const password = $('#li-pass').value;
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) {
+    status.textContent = 'No pudimos iniciar sesión: revisá tu email y contraseña.';
+    status.className = 'form-status error';
+  } else {
+    status.textContent = '';
+  }
+});
+
+$('#registerForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const status = $('#registerStatus');
+  const nombre = $('#re-nombre').value.trim();
+  const apellido = $('#re-apellido').value.trim();
+  const telefono = $('#re-telefono').value.trim();
+  const direccion = $('#re-direccion').value.trim();
+  const email = $('#re-email').value.trim();
+  const password = $('#re-pass').value;
+  const password2 = $('#re-pass2').value;
+
+  if (password !== password2) {
+    status.textContent = 'Las contraseñas no coinciden.';
+    status.className = 'form-status error';
+    return;
+  }
+  status.textContent = 'Creando cuenta...'; status.className = 'form-status';
+  const { error } = await supabase.auth.signUp({
+    email, password,
+    options: { data: { nombre, apellido, telefono, direccion: direccion || null } }
+  });
+  if (error) {
+    status.textContent = 'No pudimos crear la cuenta: ' + (error.message || 'intentá de nuevo.');
+    status.className = 'form-status error';
+  } else {
+    status.textContent = '¡Cuenta creada! Si tu proyecto pide confirmar el email, revisá tu correo.';
+    status.className = 'form-status ok';
+  }
+});
+
+// ============================================================
+// VISTA CLIENTE
+// ============================================================
+async function initClient() {
+  const [{ data: orders }, { data: coupons }] = await Promise.all([
+    supabase.from('orders')
+      .select('id, estado, fecha_ingreso, fecha_estimada_entrega, notas, order_items(id, cantidad, precio_unitario, subtotal, services(nombre, tipo_cobro))')
+      .eq('profile_id', currentUser.id)
+      .order('fecha_ingreso', { ascending: false }),
+    supabase.from('coupons').select('*').eq('profile_id', currentUser.id).eq('estado', 'activo')
+  ]);
+
+  renderClientCoupons(coupons || []);
+  renderClientOrders(orders || []);
+}
+
+function renderClientCoupons(coupons) {
+  const wrap = $('#clientCoupons');
+  wrap.innerHTML = '';
+  if (!coupons.length) return;
+  coupons.forEach(c => {
+    const chip = document.createElement('div');
+    chip.className = 'coupon-chip';
+    chip.textContent = `🎟️ ${c.codigo} — ${c.porcentaje_descuento}% OFF`;
+    wrap.appendChild(chip);
+  });
+}
+
+function orderTotal(order) {
+  return (order.order_items || []).reduce((sum, it) => sum + Number(it.subtotal || 0), 0);
+}
+
+function renderOrderCard(order) {
+  const items = order.order_items || [];
+  const itemsHtml = items.map(it =>
+    `<li><span>${escapeHtml(it.services?.nombre || 'Servicio')} × ${it.cantidad}</span><span>${fmtMoney(it.subtotal)}</span></li>`
+  ).join('');
+  return `
+    <div class="order-card">
+      <div class="top-row">
+        <span class="badge badge-${order.estado}">${ESTADO_LABEL[order.estado]}</span>
+        <span class="meta">Ingreso: ${fmtDate(order.fecha_ingreso)} · Entrega estimada: ${fmtDate(order.fecha_estimada_entrega)}</span>
+      </div>
+      <ul class="order-items-mini">${itemsHtml}</ul>
+      <div class="order-total">Total: ${fmtMoney(orderTotal(order))}</div>
+    </div>`;
+}
+
+function renderClientOrders(orders) {
+  const active = orders.filter(o => !['entregado', 'cancelado'].includes(o.estado));
+  const history = orders.filter(o => ['entregado', 'cancelado'].includes(o.estado));
+  $('#clientActiveOrders').innerHTML = active.length ? active.map(renderOrderCard).join('') : '<p class="empty">No tenés pedidos activos en este momento.</p>';
+  $('#clientHistoryOrders').innerHTML = history.length ? history.map(renderOrderCard).join('') : '<p class="empty">Todavía no hay historial.</p>';
+}
+
+// ============================================================
+// PANEL ADMIN
+// ============================================================
+let servicesCache = [];
+let suppliesCache = [];
+let profilesCache = [];
+let clientsCache = [];
+let ordersCache = [];
+
+function initAdmin() {
+  initAdminTabs();
+  loadServicesCache();
+  loadSuppliesCache();
+  loadPeopleCache();
+  loadOrdersBoard();
+  loadStockPanel();
+  loadServicesPanel();
+  setDefaultStatsRange();
+  loadStats();
+  subscribeRealtime();
+
+  $('#newOrderBtn').addEventListener('click', openNewOrderModal);
+  $('#btnEntradaStock').addEventListener('click', () => openStockMoveModal('entrada_manual'));
+  $('#btnSalidaStock').addEventListener('click', () => openStockMoveModal('salida_manual'));
+  $('#newServiceBtn').addEventListener('click', () => openServiceModal(null));
+  $('#statsApplyBtn').addEventListener('click', loadStats);
+  $('#filterMoveSupply').addEventListener('change', renderMovementsTable);
+  $('#filterMoveType').addEventListener('change', renderMovementsTable);
+}
+
+function subscribeRealtime() {
+  if (realtimeChannel) return;
+  realtimeChannel = supabase.channel('admin-orders-realtime')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => { loadOrdersBoard(); })
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'order_items' }, () => { loadOrdersBoard(); })
+    .subscribe();
+}
+
+// ---------- tabs ----------
+function initAdminTabs() {
+  const tabs = [
+    ['tabPedidosBtn', 'panelPedidos'],
+    ['tabStockBtn', 'panelStock'],
+    ['tabServiciosBtn', 'panelServicios'],
+    ['tabEstadisticasBtn', 'panelEstadisticas'],
+  ];
+  tabs.forEach(([btnId, panelId], idx) => {
+    $('#' + btnId).addEventListener('click', () => activateTab(idx));
+    $('#' + btnId).addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') activateTab((idx + 1) % tabs.length);
+      if (e.key === 'ArrowLeft') activateTab((idx - 1 + tabs.length) % tabs.length);
+    });
+  });
+  function activateTab(idx) {
+    tabs.forEach(([btnId, panelId], i) => {
+      $('#' + btnId).setAttribute('aria-selected', String(i === idx));
+      $('#' + panelId).hidden = (i !== idx);
+    });
+    $('#' + tabs[idx][0]).focus();
+  }
+}
+
+// ---------- caches ----------
+async function loadServicesCache() {
+  const { data } = await supabase.from('services').select('*').order('nombre');
+  servicesCache = data || [];
+}
+async function loadSuppliesCache() {
+  const { data } = await supabase.from('supplies').select('*').order('nombre');
+  suppliesCache = data || [];
+}
+async function loadPeopleCache() {
+  const [{ data: profiles }, { data: clients }] = await Promise.all([
+    supabase.from('profiles').select('id, nombre, apellido, telefono').eq('rol', 'cliente').order('nombre'),
+    supabase.from('clients').select('*').order('nombre')
+  ]);
+  profilesCache = profiles || [];
+  clientsCache = clients || [];
+}
+
+// ============================================================
+// PEDIDOS — tablero
+// ============================================================
+async function loadOrdersBoard() {
+  const { data, error } = await supabase.from('orders')
+    .select(`id, estado, fecha_ingreso, fecha_estimada_entrega, notas, profile_id, client_id,
+      profiles(nombre, apellido, telefono),
+      clients(nombre, apellido, telefono),
+      order_items(id, cantidad, precio_unitario, subtotal, service_id, services(nombre, tipo_cobro))`)
+    .order('fecha_ingreso', { ascending: false });
+  if (error) { toast('No pudimos cargar los pedidos.', 'error'); return; }
+  ordersCache = data || [];
+  renderBoard();
+}
+
+function personName(order) {
+  const p = order.profiles || order.clients;
+  return p ? `${p.nombre} ${p.apellido}` : 'Cliente';
+}
+function personPhone(order) {
+  const p = order.profiles || order.clients;
+  return p ? p.telefono : '';
+}
+
+function renderBoard() {
+  const board = $('#ordersBoard');
+  board.innerHTML = '';
+  ESTADOS.forEach(estado => {
+    const col = document.createElement('div');
+    col.className = 'board-col';
+    const ordersInCol = ordersCache.filter(o => o.estado === estado);
+    col.innerHTML = `<h3>${ESTADO_LABEL[estado]} <span class="count">${ordersInCol.length}</span></h3>`;
+    ordersInCol.forEach(o => {
+      const card = document.createElement('button');
+      card.type = 'button';
+      card.className = 'pedido-card';
+      card.innerHTML = `
+        <div class="pc-name">${escapeHtml(personName(o))}</div>
+        <div class="pc-meta">Entrega: ${fmtDate(o.fecha_estimada_entrega)}</div>
+        <div class="pc-meta">${(o.order_items || []).length} servicio(s)</div>
+        <div class="pc-total">${fmtMoney(orderTotal(o))}</div>`;
+      card.addEventListener('click', () => openOrderDetail(o.id));
+      col.appendChild(card);
+    });
+    board.appendChild(col);
+  });
+}
+
+// ---------- nuevo pedido ----------
+function openNewOrderModal() {
+  $('#orderNewForm').reset();
+  $('#orderServiceRows').innerHTML = '';
+  addServiceRow();
+  populatePickers();
+  const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
+  $('#orderFechaEntrega').value = tomorrow.toISOString().slice(0, 10);
+  $('#orderNewStatus').textContent = '';
+  updateOrderNewTotal();
+  openModal('modalOrderNew');
+}
+
+function populatePickers() {
+  $('#pickProfile').innerHTML = profilesCache.map(p => `<option value="${p.id}">${escapeHtml(p.nombre)} ${escapeHtml(p.apellido)} — ${escapeHtml(p.telefono)}</option>`).join('') || '<option value="">No hay clientes registrados</option>';
+  $('#pickClient').innerHTML = clientsCache.map(c => `<option value="${c.id}">${escapeHtml(c.nombre)} ${escapeHtml(c.apellido)} — ${escapeHtml(c.telefono)}</option>`).join('') || '<option value="">No hay clientes de mostrador cargados</option>';
+}
+
+$$('input[name="clientMode"]').forEach(r => r.addEventListener('change', () => {
+  const mode = $('input[name="clientMode"]:checked').value;
+  $('#pickProfileWrap').hidden = mode !== 'profile';
+  $('#pickClientWrap').hidden = mode !== 'existing_client';
+  $('#newClientWrap').hidden = mode !== 'new_client';
+}));
+
+function addServiceRow() {
+  const row = document.createElement('div');
+  row.className = 'row-service';
+  const options = servicesCache.filter(s => s.activo).map(s => `<option value="${s.id}" data-tipo="${s.tipo_cobro}" data-precio="${s.precio}">${escapeHtml(s.nombre)} (${fmtMoney(s.precio)} ${s.tipo_cobro === 'por_kg' ? '/kg' : s.tipo_cobro === 'por_prenda' ? '/prenda' : ''})</option>`).join('');
+  row.innerHTML = `
+    <div class="field" style="margin-bottom:0;">
+      <label>Servicio</label>
+      <select class="row-service-select">${options}</select>
+    </div>
+    <div class="field" style="margin-bottom:0;">
+      <label>Cantidad</label>
+      <input type="number" class="row-service-qty" step="0.01" min="0.01" value="1">
+    </div>
+    <button type="button" class="btn btn-outline btn-sm row-remove" aria-label="Quitar servicio">✕</button>`;
+  row.querySelector('.row-remove').addEventListener('click', () => { row.remove(); updateOrderNewTotal(); });
+  row.querySelector('.row-service-select').addEventListener('change', updateOrderNewTotal);
+  row.querySelector('.row-service-qty').addEventListener('input', updateOrderNewTotal);
+  $('#orderServiceRows').appendChild(row);
+  updateOrderNewTotal();
+}
+$('#addServiceRowBtn').addEventListener('click', addServiceRow);
+
+function updateOrderNewTotal() {
+  let total = 0;
+  $$('.row-service', $('#orderServiceRows')).forEach(row => {
+    const sel = row.querySelector('.row-service-select');
+    const opt = sel.options[sel.selectedIndex];
+    const precio = opt ? Number(opt.dataset.precio || 0) : 0;
+    const qty = Number(row.querySelector('.row-service-qty').value || 0);
+    total += precio * qty;
+  });
+  $('#orderNewTotalPreview').textContent = 'Total estimado: ' + fmtMoney(total);
+}
+
+$('#orderNewForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const status = $('#orderNewStatus');
+  status.className = 'form-status'; status.textContent = 'Guardando...';
+
+  const mode = $('input[name="clientMode"]:checked').value;
+  let profileId = null, clientId = null;
+
+  try {
+    if (mode === 'profile') {
+      profileId = $('#pickProfile').value;
+      if (!profileId) throw new Error('Elegí un cliente registrado.');
+    } else if (mode === 'existing_client') {
+      clientId = $('#pickClient').value;
+      if (!clientId) throw new Error('Elegí un cliente de mostrador.');
+    } else {
+      const nombre = $('#nc-nombre').value.trim();
+      const apellido = $('#nc-apellido').value.trim();
+      const telefono = $('#nc-telefono').value.trim();
+      const direccion = $('#nc-direccion').value.trim();
+      if (!nombre || !apellido || !telefono) throw new Error('Completá nombre, apellido y teléfono del cliente nuevo.');
+      const { data: newClient, error: ncError } = await supabase.from('clients')
+        .insert({ nombre, apellido, telefono, direccion: direccion || null }).select().single();
+      if (ncError) throw new Error('No pudimos crear el cliente: ' + ncError.message);
+      clientId = newClient.id;
+    }
+
+    const rows = $$('.row-service', $('#orderServiceRows')).map(row => {
+      const sel = row.querySelector('.row-service-select');
+      const opt = sel.options[sel.selectedIndex];
+      return {
+        service_id: sel.value,
+        precio_unitario: Number(opt?.dataset.precio || 0),
+        cantidad: Number(row.querySelector('.row-service-qty').value || 0)
+      };
+    }).filter(r => r.service_id && r.cantidad > 0);
+    if (!rows.length) throw new Error('Agregá al menos un servicio con cantidad válida.');
+
+    const fecha_estimada_entrega = $('#orderFechaEntrega').value || null;
+    const notas = $('#orderNotas').value.trim() || null;
+
+    const { data: newOrder, error: orderError } = await supabase.from('orders')
+      .insert({ profile_id: profileId, client_id: clientId, fecha_estimada_entrega, notas, created_by: currentUser.id })
+      .select().single();
+    if (orderError) throw new Error('No pudimos crear el pedido: ' + orderError.message);
+
+    const itemsToInsert = rows.map(r => ({ order_id: newOrder.id, service_id: r.service_id, cantidad: r.cantidad, precio_unitario: r.precio_unitario }));
+    const { error: itemsError } = await supabase.from('order_items').insert(itemsToInsert);
+    if (itemsError) throw new Error('El pedido se creó pero hubo un error cargando los servicios: ' + itemsError.message);
+
+    status.textContent = '¡Pedido creado!'; status.className = 'form-status ok';
+    toast('Pedido creado correctamente.');
+    closeModal('modalOrderNew');
+    loadOrdersBoard();
+    loadPeopleCache();
+  } catch (err) {
+    status.textContent = err.message;
+    status.className = 'form-status error';
+  }
+});
+
+// ---------- detalle de pedido ----------
+async function openOrderDetail(orderId) {
+  const order = ordersCache.find(o => o.id === orderId);
+  if (!order) return;
+  const phone = (personPhone(order) || '').replace(/\D/g, '');
+  const waPhone = phone.startsWith('54') ? phone : ('54' + phone.replace(/^0/, ''));
+
+  const itemsRows = (order.order_items || []).map(it => `
+    <tr><td>${escapeHtml(it.services?.nombre || '')}</td><td>${it.cantidad}</td><td>${fmtMoney(it.precio_unitario)}</td><td>${fmtMoney(it.subtotal)}</td></tr>
+  `).join('');
+
+  let actionsHtml = '';
+  if (order.estado === 'recibido') actionsHtml += `<button class="btn btn-primary" data-action="en_proceso">Pasar a en proceso</button>`;
+  if (order.estado === 'en_proceso') actionsHtml += `<button class="btn btn-primary" data-action="listo">Marcar como listo</button>`;
+  if (order.estado === 'listo') {
+    actionsHtml += `<button class="btn btn-primary" data-action="entregado">Marcar como entregado</button>`;
+    const msg = encodeURIComponent(`Hola ${personName(order)}, tu pedido en Pulcro Lavandería ya está listo para retirar 🧺✨`);
+    actionsHtml += `<a class="btn btn-accent" href="https://wa.me/${waPhone}?text=${msg}" target="_blank" rel="noopener">Avisar por WhatsApp</a>`;
+  }
+  if (!['entregado', 'cancelado'].includes(order.estado)) {
+    actionsHtml += `<button class="btn btn-danger" data-action="cancelado">Cancelar pedido</button>`;
+  }
+
+  $('#orderDetailTitle').textContent = 'Pedido de ' + personName(order);
+  $('#orderDetailContent').innerHTML = `
+    <p><span class="badge badge-${order.estado}">${ESTADO_LABEL[order.estado]}</span></p>
+    <p><strong>Contacto:</strong> ${escapeHtml(personPhone(order))}
+      ${phone ? `· <a href="tel:${phone}">Llamar</a> · <a href="https://wa.me/${waPhone}" target="_blank" rel="noopener">WhatsApp</a>` : ''}
+    </p>
+    <p><strong>Ingreso:</strong> ${fmtDateTime(order.fecha_ingreso)}</p>
+    ${order.notas ? `<p><strong>Notas:</strong> ${escapeHtml(order.notas)}</p>` : ''}
+    <div class="table-wrap"><table>
+      <thead><tr><th>Servicio</th><th>Cant.</th><th>P. unit.</th><th>Subtotal</th></tr></thead>
+      <tbody>${itemsRows}</tbody>
+    </table></div>
+    <p style="text-align:right;font-weight:800;">Total: ${fmtMoney(orderTotal(order))}</p>
+
+    <div class="field">
+      <label for="reprogramFecha">Reprogramar fecha estimada de entrega</label>
+      <div style="display:flex;gap:10px;">
+        <input type="date" id="reprogramFecha" value="${order.fecha_estimada_entrega || ''}">
+        <button class="btn btn-outline btn-sm" id="reprogramSaveBtn">Guardar</button>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;">${actionsHtml}</div>
+    <p class="form-status" id="orderDetailStatus" role="alert"></p>
+  `;
+
+  $('#reprogramSaveBtn')?.addEventListener('click', async () => {
+    const val = $('#reprogramFecha').value;
+    const { error } = await supabase.from('orders').update({ fecha_estimada_entrega: val }).eq('id', order.id);
+    if (error) { toast('No se pudo reprogramar.', 'error'); }
+    else { toast('Fecha de entrega actualizada.'); loadOrdersBoard(); }
+  });
+
+  $$('[data-action]', $('#orderDetailContent')).forEach(btn => {
+    btn.addEventListener('click', () => {
+      const nuevoEstado = btn.dataset.action;
+      if (nuevoEstado === 'cancelado') {
+        askConfirm({
+          title: 'Cancelar pedido',
+          message: '¿Seguro que querés cancelar este pedido? Esta acción no se puede deshacer.',
+          confirmText: 'Sí, cancelar',
+          onConfirm: () => changeOrderState(order.id, 'cancelado')
+        });
+      } else {
+        changeOrderState(order.id, nuevoEstado);
+      }
+    });
+  });
+
+  openModal('modalOrderDetail');
+}
+
+async function changeOrderState(orderId, estado) {
+  const { error } = await supabase.from('orders').update({ estado }).eq('id', orderId);
+  if (error) { toast('No pudimos actualizar el estado.', 'error'); return; }
+  toast('Estado actualizado a "' + ESTADO_LABEL[estado] + '".');
+  closeModal('modalOrderDetail');
+  loadOrdersBoard();
+  loadStockPanel();
+}
+
+// ============================================================
+// STOCK
+// ============================================================
+async function loadStockPanel() {
+  await loadSuppliesCache();
+  renderSuppliesTable();
+  populateSupplySelects();
+  await loadMovements();
+  await loadRecipe();
+}
+
+function renderSuppliesTable() {
+  $('#suppliesTableBody').innerHTML = suppliesCache.map(s => `
+    <tr>
+      <td>${escapeHtml(s.nombre)}</td>
+      <td>${escapeHtml(s.unidad_medida)}</td>
+      <td>${s.stock_actual}</td>
+      <td>${s.stock_minimo}</td>
+      <td>${fmtMoney(s.costo_unitario)}</td>
+      <td><span class="badge ${s.bajo_stock ? 'badge-bajo' : 'badge-ok'}">${s.bajo_stock ? 'Bajo' : 'OK'}</span></td>
+    </tr>`).join('') || '<tr><td colspan="6" class="empty">Sin insumos cargados.</td></tr>';
+}
+
+function populateSupplySelects() {
+  const options = suppliesCache.map(s => `<option value="${s.id}">${escapeHtml(s.nombre)} (${escapeHtml(s.unidad_medida)})</option>`).join('');
+  $('#sm-supply').innerHTML = options;
+  $('#filterMoveSupply').innerHTML = '<option value="">Todos</option>' + options;
+  $('#recipeSupply').innerHTML = options;
+}
+
+let stockMoveTipo = 'entrada_manual';
+function openStockMoveModal(tipo) {
+  stockMoveTipo = tipo;
+  $('#stockMoveTitle').textContent = tipo === 'entrada_manual' ? 'Registrar entrada de stock' : 'Registrar salida de stock';
+  $('#stockMoveSubmitBtn').textContent = tipo === 'entrada_manual' ? 'Registrar entrada' : 'Registrar salida';
+  $('#stockMoveForm').reset();
+  $('#stockMoveStatus').textContent = '';
+  openModal('modalStockMove');
+}
+$('#stockMoveForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const status = $('#stockMoveStatus');
+  const supply_id = $('#sm-supply').value;
+  const cantidad = Number($('#sm-qty').value);
+  const motivo = $('#sm-motivo').value.trim();
+  if (!supply_id || !cantidad || cantidad <= 0 || !motivo) {
+    status.textContent = 'Completá todos los campos con una cantidad mayor a 0.';
+    status.className = 'form-status error';
+    return;
+  }
+  const { error } = await supabase.from('supply_movements').insert({
+    supply_id, tipo: stockMoveTipo, cantidad, motivo, usuario_id: currentUser.id
+  });
+  if (error) {
+    status.textContent = 'No pudimos registrar el movimiento: ' + error.message;
+    status.className = 'form-status error';
+    return;
+  }
+  toast('Movimiento registrado.');
+  closeModal('modalStockMove');
+  loadStockPanel();
+});
+
+let movementsCache = [];
+async function loadMovements() {
+  const { data } = await supabase.from('supply_movements')
+    .select('id, tipo, cantidad, motivo, created_at, supply_id, supplies(nombre)')
+    .order('created_at', { ascending: false })
+    .limit(300);
+  movementsCache = data || [];
+  renderMovementsTable();
+}
+function renderMovementsTable() {
+  const supplyFilter = $('#filterMoveSupply').value;
+  const typeFilter = $('#filterMoveType').value;
+  const filtered = movementsCache.filter(m =>
+    (!supplyFilter || m.supply_id === supplyFilter) && (!typeFilter || m.tipo === typeFilter)
+  );
+  const tipoLabel = { entrada_manual: 'Entrada manual', salida_manual: 'Salida manual', consumo_automatico: 'Consumo automático' };
+  $('#movementsTableBody').innerHTML = filtered.map(m => `
+    <tr>
+      <td>${fmtDateTime(m.created_at)}</td>
+      <td>${escapeHtml(m.supplies?.nombre || '')}</td>
+      <td>${tipoLabel[m.tipo]}</td>
+      <td>${m.cantidad}</td>
+      <td>${escapeHtml(m.motivo || '')}</td>
+    </tr>`).join('') || '<tr><td colspan="5" class="empty">Sin movimientos.</td></tr>';
+}
+
+async function loadRecipe() {
+  const [{ data: recipe }] = await Promise.all([
+    supabase.from('service_supply_usage').select('id, cantidad_consumida, service_id, supply_id, services(nombre, tipo_cobro), supplies(nombre, unidad_medida)').order('id')
+  ]);
+  $('#recipeService').innerHTML = servicesCache.map(s => `<option value="${s.id}">${escapeHtml(s.nombre)}</option>`).join('');
+  $('#recipeTableBody').innerHTML = (recipe || []).map(r => `
+    <tr>
+      <td>${escapeHtml(r.services?.nombre || '')}</td>
+      <td>${escapeHtml(r.supplies?.nombre || '')}</td>
+      <td>${r.cantidad_consumida} ${escapeHtml(r.supplies?.unidad_medida || '')}</td>
+      <td><button class="btn btn-danger btn-sm" data-recipe-id="${r.id}">Quitar</button></td>
+    </tr>`).join('') || '<tr><td colspan="4" class="empty">Todavía no configuraste el recetario.</td></tr>';
+
+  $$('[data-recipe-id]', $('#recipeTableBody')).forEach(btn => {
+    btn.addEventListener('click', () => {
+      askConfirm({
+        title: 'Quitar del recetario',
+        message: '¿Seguro que querés quitar esta relación servicio-insumo? Los pedidos ya cargados no se ven afectados.',
+        confirmText: 'Quitar',
+        onConfirm: async () => {
+          const { error } = await supabase.from('service_supply_usage').delete().eq('id', btn.dataset.recipeId);
+          if (error) toast('No se pudo quitar.', 'error'); else { toast('Quitado del recetario.'); loadRecipe(); }
+        }
+      });
+    });
+  });
+}
+
+$('#recipeForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const status = $('#recipeStatus');
+  const service_id = $('#recipeService').value;
+  const supply_id = $('#recipeSupply').value;
+  const cantidad_consumida = Number($('#recipeQty').value);
+  if (!service_id || !supply_id || !(cantidad_consumida >= 0)) {
+    status.textContent = 'Completá todos los campos.'; status.className = 'form-status error'; return;
+  }
+  const { error } = await supabase.from('service_supply_usage')
+    .upsert({ service_id, supply_id, cantidad_consumida }, { onConflict: 'service_id,supply_id' });
+  if (error) {
+    status.textContent = 'No se pudo guardar: ' + error.message; status.className = 'form-status error'; return;
+  }
+  status.textContent = 'Guardado.'; status.className = 'form-status ok';
+  $('#recipeForm').reset();
+  loadRecipe();
+});
+
+// ============================================================
+// SERVICIOS
+// ============================================================
+async function loadServicesPanel() {
+  await loadServicesCache();
+  renderServicesTable();
+}
+function renderServicesTable() {
+  const tipoLabel = { por_kg: 'Por kg', por_prenda: 'Por prenda', fijo: 'Fijo' };
+  $('#servicesTableBody').innerHTML = servicesCache.map(s => `
+    <tr>
+      <td>${escapeHtml(s.nombre)}</td>
+      <td>${tipoLabel[s.tipo_cobro]}</td>
+      <td>${fmtMoney(s.precio)}</td>
+      <td><span class="badge ${s.activo ? 'badge-activo' : 'badge-usado'}">${s.activo ? 'Activo' : 'Inactivo'}</span></td>
+      <td><button class="btn btn-outline btn-sm" data-edit-service="${s.id}">Editar</button></td>
+    </tr>`).join('') || '<tr><td colspan="5" class="empty">Sin servicios cargados.</td></tr>';
+
+  $$('[data-edit-service]', $('#servicesTableBody')).forEach(btn => {
+    btn.addEventListener('click', () => openServiceModal(servicesCache.find(s => s.id === btn.dataset.editService)));
+  });
+}
+
+function openServiceModal(service) {
+  $('#serviceForm').reset();
+  $('#serviceStatus').textContent = '';
+  $('#serviceModalTitle').textContent = service ? 'Editar servicio' : 'Nuevo servicio';
+  $('#sv-id').value = service?.id || '';
+  $('#sv-nombre').value = service?.nombre || '';
+  $('#sv-tipo').value = service?.tipo_cobro || 'por_kg';
+  $('#sv-precio').value = service?.precio ?? '';
+  $('#sv-activo').checked = service ? !!service.activo : true;
+  openModal('modalService');
+}
+
+$('#serviceForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const status = $('#serviceStatus');
+  const id = $('#sv-id').value;
+  const payload = {
+    nombre: $('#sv-nombre').value.trim(),
+    tipo_cobro: $('#sv-tipo').value,
+    precio: Number($('#sv-precio').value),
+    activo: $('#sv-activo').checked
+  };
+  if (!payload.nombre || !(payload.precio >= 0)) {
+    status.textContent = 'Completá nombre y precio válidos.'; status.className = 'form-status error'; return;
+  }
+  const query = id ? supabase.from('services').update(payload).eq('id', id) : supabase.from('services').insert(payload);
+  const { error } = await query;
+  if (error) { status.textContent = 'No se pudo guardar: ' + error.message; status.className = 'form-status error'; return; }
+  toast('Servicio guardado.');
+  closeModal('modalService');
+  loadServicesPanel();
+});
+
+// ============================================================
+// ESTADÍSTICAS
+// ============================================================
+let chartFacturacion, chartInsumos;
+
+function setDefaultStatsRange() {
+  const today = new Date();
+  const monthAgo = new Date(); monthAgo.setDate(monthAgo.getDate() - 30);
+  $('#statsDesde').value = monthAgo.toISOString().slice(0, 10);
+  $('#statsHasta').value = today.toISOString().slice(0, 10);
+}
+
+async function loadStats() {
+  const desde = $('#statsDesde').value;
+  const hasta = $('#statsHasta').value;
+  const hastaFull = hasta + 'T23:59:59';
+
+  const { data: orders } = await supabase.from('orders')
+    .select('id, fecha_ingreso, order_items(cantidad, subtotal, services(nombre, tipo_cobro))')
+    .eq('estado', 'entregado')
+    .gte('fecha_ingreso', desde)
+    .lte('fecha_ingreso', hastaFull);
+
+  const { data: movements } = await supabase.from('supply_movements')
+    .select('cantidad, supplies(nombre, unidad_medida)')
+    .eq('tipo', 'consumo_automatico')
+    .gte('created_at', desde)
+    .lte('created_at', hastaFull);
+
+  renderStatsSummary(orders || [], movements || []);
+  await renderRanking();
+  await renderCoupons();
+}
+
+function renderStatsSummary(orders, movements) {
+  let totalFacturado = 0, kilos = 0, prendas = 0;
+  const porServicio = {};
+  orders.forEach(o => (o.order_items || []).forEach(it => {
+    const nombre = it.services?.nombre || 'Otro';
+    totalFacturado += Number(it.subtotal || 0);
+    porServicio[nombre] = (porServicio[nombre] || 0) + Number(it.subtotal || 0);
+    if (it.services?.tipo_cobro === 'por_kg') kilos += Number(it.cantidad || 0);
+    if (it.services?.tipo_cobro === 'por_prenda') prendas += Number(it.cantidad || 0);
+  }));
+
+  $('#statTotalFacturado').textContent = fmtMoney(totalFacturado);
+  $('#statKilos').textContent = kilos.toLocaleString('es-AR');
+  $('#statPrendas').textContent = prendas.toLocaleString('es-AR');
+  $('#statPedidos').textContent = orders.length;
+
+  const porInsumo = {};
+  movements.forEach(m => {
+    const nombre = (m.supplies?.nombre || 'Insumo') + ' (' + (m.supplies?.unidad_medida || '') + ')';
+    porInsumo[nombre] = (porInsumo[nombre] || 0) + Number(m.cantidad || 0);
+  });
+
+  drawBarChart('chartFacturacion', Object.keys(porServicio), Object.values(porServicio), '#0E7C7B');
+  drawBarChart('chartInsumos', Object.keys(porInsumo), Object.values(porInsumo), '#FF8A5B');
+}
+
+function drawBarChart(canvasId, labels, data, color) {
+  const ctx = document.getElementById(canvasId).getContext('2d');
+  const existing = canvasId === 'chartFacturacion' ? chartFacturacion : chartInsumos;
+  if (existing) existing.destroy();
+  const chart = new Chart(ctx, {
+    type: 'bar',
+    data: { labels: labels.length ? labels : ['Sin datos'], datasets: [{ data: data.length ? data : [0], backgroundColor: color, borderRadius: 8 }] },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+  if (canvasId === 'chartFacturacion') chartFacturacion = chart; else chartInsumos = chart;
+}
+
+async function renderRanking() {
+  const { data: orders } = await supabase.from('orders')
+    .select('profile_id, client_id, profiles(nombre, apellido), clients(nombre, apellido)')
+    .eq('estado', 'entregado');
+  const counts = {};
+  (orders || []).forEach(o => {
+    const key = o.profile_id || o.client_id;
+    if (!key) return;
+    if (!counts[key]) counts[key] = { nombre: o.profiles ? `${o.profiles.nombre} ${o.profiles.apellido}` : `${o.clients.nombre} ${o.clients.apellido}`, total: 0 };
+    counts[key].total++;
+  });
+  const ranking = Object.values(counts).sort((a, b) => b.total - a.total).slice(0, 20);
+  $('#rankingTableBody').innerHTML = ranking.map(r => {
+    const faltan = 10 - (r.total % 10);
+    return `<tr><td>${escapeHtml(r.nombre)}</td><td>${r.total}</td><td>${faltan === 10 ? '¡Cupón recién generado!' : faltan + ' pedido(s)'}</td></tr>`;
+  }).join('') || '<tr><td colspan="3" class="empty">Todavía no hay pedidos entregados.</td></tr>';
+}
+
+async function renderCoupons() {
+  const { data: coupons } = await supabase.from('coupons')
+    .select('*, profiles(nombre, apellido), clients(nombre, apellido)')
+    .order('created_at', { ascending: false });
+  $('#couponsTableBody').innerHTML = (coupons || []).map(c => {
+    const nombre = c.profiles ? `${c.profiles.nombre} ${c.profiles.apellido}` : (c.clients ? `${c.clients.nombre} ${c.clients.apellido}` : '—');
+    return `<tr>
+      <td>${escapeHtml(c.codigo)}</td>
+      <td>${escapeHtml(nombre)}</td>
+      <td>${c.porcentaje_descuento}%</td>
+      <td><span class="badge badge-${c.estado}">${c.estado}</span></td>
+      <td>${c.estado === 'activo' ? `<button class="btn btn-outline btn-sm" data-use-coupon="${c.id}">Marcar usado</button>` : ''}</td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="5" class="empty">Todavía no se generaron cupones.</td></tr>';
+
+  $$('[data-use-coupon]', $('#couponsTableBody')).forEach(btn => {
+    btn.addEventListener('click', () => {
+      askConfirm({
+        title: 'Marcar cupón como usado',
+        message: '¿Confirmás que este cupón ya fue utilizado por el cliente?',
+        confirmText: 'Marcar usado',
+        onConfirm: async () => {
+          const { error } = await supabase.from('coupons').update({ estado: 'usado' }).eq('id', btn.dataset.useCoupon);
+          if (error) toast('No se pudo actualizar.', 'error'); else { toast('Cupón marcado como usado.'); renderCoupons(); }
+        }
+      });
+    });
+  });
+}
+
+// ============================================================
+boot();
+</script>
+</body>
+</html>
